@@ -1,4 +1,4 @@
-/* Restablecimiento general */
+/* Configuración general */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -7,74 +7,129 @@
 }
 
 body {
-    background-color: #f0f4f8;
-    color: #1e293b;
-    padding-bottom: 80px; /* Margen para evitar que el menú tape el contenido */
-}
-
-/* Encabezado */
-header {
-    background: linear-gradient(135deg, #1e3a8a, #2563eb);
+    background-color: #0b0f19; /* Fondo muy oscuro estilo la app */
     color: #ffffff;
-    padding: 2rem 1rem;
-    text-align: center;
-    border-bottom-left-radius: 16px;
-    border-bottom-right-radius: 16px;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    padding-bottom: 90px;
+    min-height: 100vh;
 }
 
-header h1 {
+/* Banner de encabezado rojo */
+.hero-header {
+    background-color: #e53935;
+    padding: 2.5rem 1.25rem 1.75rem 1.25rem;
+}
+
+.hero-header h1 {
     font-size: 1.8rem;
-    font-weight: 700;
+    font-weight: 800;
+    color: #ffffff;
     letter-spacing: -0.5px;
 }
 
-header p {
-    font-size: 1rem;
-    color: #bfdbfe;
-    margin-top: 0.5rem;
-}
-
-/* Tarjeta de contenido */
-main {
-    padding: 1.5rem 1rem;
+/* Contenido principal */
+.container {
+    padding: 1.25rem;
     max-width: 500px;
     margin: 0 auto;
 }
 
+.subtitle {
+    color: #94a3b8;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.section-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #f8fafc;
+    letter-spacing: 0.5px;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+}
+
+/* Grilla de accesos rápidos */
+.quick-access-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+/* Tarjetas individuales */
 .card {
-    background: #ffffff;
-    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 140px;
+    padding: 1rem;
+    border-radius: 16px;
+    text-decoration: none;
+    color: #ffffff;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.card:active {
+    transform: scale(0.97);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background-color: rgba(0, 0, 0, 0.25);
     border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    border: 1px solid #e2e8f0;
+    font-size: 1.3rem;
 }
 
-.card h2 {
-    font-size: 1.1rem;
-    color: #1e3a8a;
-    margin-bottom: 0.5rem;
+.arrow {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 300;
 }
 
-.card p {
-    font-size: 0.9rem;
-    color: #64748b;
-    line-height: 1.4;
+.card h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
 }
 
-/* Menú inferior fijo */
+/* Colores oscurecidos para cada tarjeta */
+.card-red {
+    background-color: #582428;
+}
+
+.card-blue {
+    background-color: #233558;
+}
+
+.card-green {
+    background-color: #1a4332;
+}
+
+.card-purple {
+    background-color: #4a233e;
+}
+
+/* Navegación inferior fija */
 .bottom-nav {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: #ffffff;
+    background-color: #111625;
     display: flex;
     justify-content: space-around;
     align-items: center;
-    padding: 0.6rem 0;
-    border-top: 1px solid #e2e8f0;
-    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
+    padding: 0.6rem 0.2rem 0.8rem 0.2rem;
+    border-top: 1px solid #1e293b;
+    z-index: 1000;
 }
 
 .nav-item {
@@ -83,17 +138,15 @@ main {
     align-items: center;
     text-decoration: none;
     color: #64748b;
-    font-size: 0.75rem;
-    font-weight: 600;
-    transition: all 0.2s ease;
+    font-size: 0.7rem;
+    font-weight: 500;
+    gap: 4px;
 }
 
-.nav-item.active,
-.nav-item:hover {
-    color: #2563eb;
+.nav-item.active {
+    color: #ef4444; /* Indicador rojo activo */
 }
 
 .nav-icon {
-    font-size: 1.4rem;
-    margin-bottom: 0.2rem;
+    font-size: 1.2rem;
 }
