@@ -15,7 +15,7 @@ function showView(viewName) {
         const navEstaciones = document.getElementById("nav-estaciones");
         if (navEstaciones) navEstaciones.classList.add("active");
 
-        // Intentar cargar las estaciones si aún no se han cargado
+        // Cargar estaciones si no están cargadas
         if (allStations.length === 0) {
             loadStationsCSV();
         }
@@ -30,7 +30,6 @@ function showView(viewName) {
 
 // Cargar el archivo CSV
 function loadStationsCSV() {
-    // Si tu archivo en GitHub tiene un nombre distinto, cámbialo en la siguiente línea:
     const csvFileName = "Estaciones Cercanías Asturias.csv";
 
     fetch(csvFileName)
@@ -46,8 +45,7 @@ function loadStationsCSV() {
             const container = document.getElementById("stations-list");
             if (container) {
                 container.innerHTML = `<p class='loading-text' style='color: #ef4444;'>
-                    ⚠️ No se pudo cargar el archivo CSV.<br>
-                    Verifica que el archivo esté subido como <b>${csvFileName}</b>.
+                    ⚠️ No se pudo cargar el archivo CSV.
                 </p>`;
             }
         });
@@ -58,19 +56,26 @@ function parseCSV(text) {
     let stationsSet = new Set();
 
     lines.forEach((line, index) => {
-        if (line.trim() !== "") {
-            const cleanedLine = line.replace(/["\r]/g, "").trim();
-            const columns = cleanedLine.split(",");
-            const stationName = columns[0];
-            if (stationName && index > 0) {
+        const cleanedLine = line.replace(/["\r]/g, "").trim();
+        if (cleanedLine !== "") {
+            // El CSV utiliza punto y coma (;) como separador
+            const columns = cleanedLine.split(";");
+            
+            // La columna de descripción suele ser la segunda (índice 1)
+            let stationName = columns[1] ? columns[1].trim() : columns[0].trim();
+            
+            // Ignorar la cabecera del CSV si contiene palabras como 'DESCRIPCION' o 'CODIGO'
+            if (stationName && !stationName.toUpperCase().includes("DESCRIPCION") && !stationName.toUpperCase().includes("CODIGO")) {
                 stationsSet.add(stationName);
             }
         }
     });
 
+    // Ordenar todas las estaciones de la A a la Z
     allStations = Array.from(stationsSet).sort((a, b) => 
         a.localeCompare(b, 'es', { sensitivity: 'base' })
     );
+    
     renderStations(allStations);
 }
 
