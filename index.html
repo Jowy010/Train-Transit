@@ -8,44 +8,53 @@
 </head>
 <body>
 
-    <!-- Encabezado con tu diseño original -->
+    <!-- Encabezado Superior -->
     <header class="navbar">
         <h1>¡Bienvenido a Train Transit! 👋</h1>
     </header>
 
-    <!-- Contenedor Principal -->
-    <main class="container">
-        <h2>ESTACIONES</h2>
-        
-        <!-- Buscador -->
-        <input type="text" id="buscador" placeholder="Buscar estación (ej. Oviedo)..." onkeyup="filtrarEstaciones()">
-
-        <!-- Lista de estaciones -->
-        <div id="lista-estaciones" class="stations-list">
-            <p style="color: #94a3b8; padding: 10px;">Cargando estaciones...</p>
+    <!-- PANTALLA 1: INICIO (MENÚ PRINCIPAL) -->
+    <main id="pantalla-inicio" class="container pantalla-activa">
+        <h2>LÍNEAS DE CERCANÍAS</h2>
+        <div class="lineas-grid">
+            <div class="linea-card"><img src="img/C-1.png" alt="C1"> <span>Gijón - Puente de los Fierros</span></div>
+            <div class="linea-card"><img src="img/C-2.png" alt="C2"> <span>Oviedo - El Entrego</span></div>
+            <div class="linea-card"><img src="img/C-3.png" alt="C3"> <span>Llamaquique - Avilés - San Juan</span></div>
+            <div class="linea-card"><img src="img/C-4.png" alt="C4"> <span>Gijón - Cudillero</span></div>
+            <div class="linea-card"><img src="img/C-5.png" alt="C5"> <span>Gijón - Laviana</span></div>
+            <div class="linea-card"><img src="img/C-6.png" alt="C6"> <span>Oviedo - Infiesto</span></div>
+            <div class="linea-card"><img src="img/C-7.png" alt="C7"> <span>Oviedo - San Esteban</span></div>
+            <div class="linea-card"><img src="img/C-8.png" alt="C8"> <span>Baíña - Collanzo</span></div>
         </div>
     </main>
 
-    <!-- Ventana Modal de Horarios -->
+    <!-- PANTALLA 2: ESTACIONES -->
+    <main id="pantalla-estaciones" class="container" style="display: none;">
+        <h2>ESTACIONES DE ASTURIAS</h2>
+        <input type="text" id="buscador" placeholder="Buscar estación (ej. Oviedo)..." onkeyup="filtrarEstaciones()">
+        <div id="lista-estaciones" class="stations-list">
+            <p style="color: #94a3b8;">Cargando estaciones...</p>
+        </div>
+    </main>
+
+    <!-- Modal Flotante (Popup para Horarios en tiempo real) -->
     <div id="modal-horarios" class="modal-overlay" style="display: none;">
         <div class="modal-content">
-            <div id="modal-body">
-                <!-- Aquí se cargan los horarios en vivo -->
-            </div>
+            <div id="modal-body"></div>
         </div>
     </div>
 
-    <!-- Menú de Navegación Inferior Completo -->
+    <!-- Menú de Navegación Inferior -->
     <nav class="bottom-nav">
-        <a href="#" class="nav-item">
+        <a href="#" class="nav-item active" onclick="cambiarPantalla('inicio')">
             <span class="icon">🏠</span>
             <span class="text">Inicio</span>
         </a>
-        <a href="#" class="nav-item">
+        <a href="#" class="nav-item" onclick="cambiarPantalla('inicio')">
             <span class="icon">🚆</span>
             <span class="text">Líneas</span>
         </a>
-        <a href="#" class="nav-item active">
+        <a href="#" class="nav-item" onclick="cambiarPantalla('estaciones')">
             <span class="icon">📍</span>
             <span class="text">Estaciones</span>
         </a>
@@ -63,7 +72,6 @@
         </a>
     </nav>
 
-    <!-- JS principal -->
     <script src="app.js"></script>
 </body>
 </html>
