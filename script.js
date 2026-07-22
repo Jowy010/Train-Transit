@@ -1,11 +1,10 @@
 let allStations = [];
 
-// Función para cambiar de vista (Inicio / Estaciones / etc.)
+// Cambiar entre pantallas/vistas
 function showView(viewName) {
     const homeView = document.getElementById("home-view");
     const estacionesView = document.getElementById("estaciones-view");
 
-    // Desmarcar todos los iconos del menú inferior
     document.querySelectorAll(".nav-item").forEach(item => item.classList.remove("active"));
 
     if (viewName === "estaciones") {
@@ -15,9 +14,9 @@ function showView(viewName) {
         const navEstaciones = document.getElementById("nav-estaciones");
         if (navEstaciones) navEstaciones.classList.add("active");
 
-        // Cargar estaciones si no están cargadas
+        // Cargar estaciones si aún no se han cargado
         if (allStations.length === 0) {
-            loadStationsCSV();
+            loadAllAsturiasStations();
         }
     } else {
         if (estacionesView) estacionesView.classList.add("view-hidden");
@@ -28,55 +27,78 @@ function showView(viewName) {
     }
 }
 
-// Cargar el archivo CSV
-function loadStationsCSV() {
-    const csvFileName = "Estaciones Cercanías Asturias.csv";
+// Cargar tanto el archivo de Cercanías como el de FEVE
+async function loadAllAsturiasStations() {
+    const container = document.getElementById("stations-list");
+    if (container) {
+        container.innerHTML = "<p class='loading-text'>Cargando estaciones de Asturias (Renfe y FEVE)...</p>";
+    }
 
-    fetch(csvFileName)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("No se encontró el archivo CSV");
-            }
-            return response.text();
-        })
-        .then(data => parseCSV(data))
-        .catch(error => {
-            console.error("Error al cargar estaciones:", error);
-            const container = document.getElementById("stations-list");
-            if (container) {
-                container.innerHTML = `<p class='loading-text' style='color: #ef4444;'>
-                    ⚠️ No se pudo cargar el archivo CSV.
-                </p>`;
-            }
-        });
-}
-
-function parseCSV(text) {
-    const lines = text.split("\n");
     let stationsSet = new Set();
 
-    lines.forEach((line, index) => {
-        const cleanedLine = line.replace(/["\r]/g, "").trim();
-        if (cleanedLine !== "") {
-            // El CSV utiliza punto y coma (;) como separador
-            const columns = cleanedLine.split(";");
-            
-            // La columna de descripción suele ser la segunda (índice 1)
-            let stationName = columns[1] ? columns[1].trim() : columns[0].trim();
-            
-            // Ignorar la cabecera del CSV si contiene palabras como 'DESCRIPCION' o 'CODIGO'
-            if (stationName && !stationName.toUpperCase().includes("DESCRIPCION") && !stationName.toUpperCase().includes("CODIGO")) {
-                stationsSet.add(stationName);
-            }
+    // 1. Cargar archivo Renfe Cercanías Asturias
+    try {
+        const res1 = await fetch("Estaciones Cercanías Asturias.csv");
+        if (res1.ok) {
+            const text1 = await res1.text();
+            parseCSV(text1, stationsSet, true); // true = asumir que todas son de Asturias
         }
-    });
+    } catch (e) {
+        console.warn("No se pudo cargar el archivo de Cercanías:", e);
+    }
 
-    // Ordenar todas las estaciones de la A a la Z
+    // 2. Cargar archivo FEVE (listado-de-estaciones-feve-2.csv)
+    try {
+        const res2 = await fetch("listado-de-estaciones-feve-2.csv");
+        if (res2.ok) {
+            const text2 = await res2.text();
+            parseCSV(text2, stationsSet, false); // false = filtrar estrictamente por PROVINCIA = Asturias
+        }
+    } catch (e) {
+        console.warn("No se pudo cargar el archivo de FEVE:", e);
+    }
+
+    // Convertir a Array y ordenar de la A a la Z
     allStations = Array.from(stationsSet).sort((a, b) => 
         a.localeCompare(b, 'es', { sensitivity: 'base' })
     );
-    
+
     renderStations(allStations);
+}
+
+// Procesar el texto del CSV
+function parseCSV(text, stationsSet, isAsturiasOnlyFile) {
+    const lines = text.split("\n");
+    if (lines.length === 0) return;
+
+    // Detectar encabezado para buscar la columna 'PROVINCIA' y 'DESCRIPCION'
+    const headerCols = lines[0].replace(/["\r]/g, "").split(";").map(c => c.trim().toUpperCase());
+    
+    let descIndex = headerCols.findIndex(c => c.includes("DESCRIPCION"));
+    let provIndex = headerCols.findIndex(c => c.includes("PROVINCIA"));
+
+    // Ajustes por defecto si no encuentra cabecera
+    if (descIndex === -1) descIndex = 1;
+    if (provIndex === -1) provIndex = 7;
+
+    lines.forEach((line, index) => {
+        if (index === 0) return; // Saltar cabecera
+        
+        const cleanedLine = line.replace(/["\r]/g, "").trim();
+        if (cleanedLine !== "") {
+            const columns = cleanedLine.split(";");
+            
+            const stationName = columns[descIndex] ? columns[descIndex].trim() : "";
+            const provincia = columns[provIndex] ? columns[provIndex].trim() : "";
+
+            // Si el archivo es solo de Asturias O si la columna provincia dice 'Asturias'
+            if (stationName) {
+                if (isAsturiasOnlyFile || provincia.toLowerCase().includes("asturias")) {
+                    stationsSet.add(stationName);
+                }
+            }
+        }
+    });
 }
 
 function renderStations(list) {
@@ -86,7 +108,7 @@ function renderStations(list) {
     container.innerHTML = "";
 
     if (list.length === 0) {
-        container.innerHTML = "<p class='loading-text'>No se encontraron estaciones.</p>";
+        container.innerHTML = "<p class='loading-text'>No se encontraron estaciones para Asturias.</p>";
         return;
     }
 
