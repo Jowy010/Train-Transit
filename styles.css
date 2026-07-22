@@ -1,4 +1,3 @@
-/* Configuración general */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -7,31 +6,34 @@
 }
 
 body {
-    background-color: #0b0f19; /* Fondo muy oscuro estilo la app */
+    background-color: #0b0f19;
     color: #ffffff;
     padding-bottom: 90px;
     min-height: 100vh;
 }
 
-/* Banner de encabezado en azul degradado y más fino */
+/* Banner superior azul degradado fino */
 .hero-header {
-    background: linear-gradient(135deg, #1e3a8a, #2563eb); /* Azul degradado */
-    padding: 1rem 1.25rem; /* Menos alto / más delgadito */
+    background: linear-gradient(135deg, #1e3a8a, #2563eb);
+    padding: 1rem 1.25rem;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .hero-header h1 {
-    font-size: 1.3rem; /* Tamaño de texto ajustado al nuevo grosor */
+    font-size: 1.3rem;
     font-weight: 700;
     color: #ffffff;
     letter-spacing: -0.3px;
 }
 
-/* Contenido principal */
 .container {
     padding: 1.25rem;
     max-width: 500px;
     margin: 0 auto;
+}
+
+.view-hidden {
+    display: none;
 }
 
 .subtitle {
@@ -49,14 +51,13 @@ body {
     text-transform: uppercase;
 }
 
-/* Grilla de accesos rápidos */
+/* Tarjetas */
 .quick-access-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
 }
 
-/* Tarjetas individuales */
 .card {
     display: flex;
     flex-direction: column;
@@ -66,7 +67,7 @@ body {
     border-radius: 16px;
     text-decoration: none;
     color: #ffffff;
-    transition: transform 0.2s ease, opacity 0.2s ease;
+    transition: transform 0.2s ease;
 }
 
 .card:active {
@@ -93,7 +94,6 @@ body {
 .arrow {
     font-size: 1.2rem;
     color: rgba(255, 255, 255, 0.6);
-    font-weight: 300;
 }
 
 .card h3 {
@@ -101,24 +101,59 @@ body {
     font-weight: 700;
 }
 
-/* Colores oscurecidos para cada tarjeta */
-.card-red {
-    background-color: #582428;
+.card-red { background-color: #582428; }
+.card-blue { background-color: #233558; }
+.card-green { background-color: #1a4332; }
+.card-purple { background-color: #4a233e; }
+
+/* Buscador de estaciones */
+.search-box {
+    margin-bottom: 1rem;
 }
 
-.card-blue {
-    background-color: #233558;
+.search-box input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border-radius: 12px;
+    border: 1px solid #1e293b;
+    background-color: #111625;
+    color: #fff;
+    font-size: 0.95rem;
+    outline: none;
 }
 
-.card-green {
-    background-color: #1a4332;
+.search-box input:focus {
+    border-color: #2563eb;
 }
 
-.card-purple {
-    background-color: #4a233e;
+/* Lista de Estaciones */
+.stations-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
-/* Navegación inferior fija */
+.station-item {
+    background-color: #111625;
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid #1e293b;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.station-item:hover {
+    background-color: #1a2238;
+}
+
+.loading-text {
+    color: #94a3b8;
+    font-size: 0.9rem;
+}
+
+/* Navegación inferior */
 .bottom-nav {
     position: fixed;
     bottom: 0;
@@ -145,7 +180,7 @@ body {
 }
 
 .nav-item.active {
-    color: #ef4444; /* Indicador rojo activo */
+    color: #ef4444;
 }
 
 .nav-icon {
