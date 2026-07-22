@@ -13,17 +13,18 @@ body {
     min-height: 100vh;
 }
 
-/* Banner de encabezado rojo */
+/* Banner de encabezado en azul degradado y más fino */
 .hero-header {
-    background-color: #e53935;
-    padding: 2.5rem 1.25rem 1.75rem 1.25rem;
+    background: linear-gradient(135deg, #1e3a8a, #2563eb); /* Azul degradado */
+    padding: 1rem 1.25rem; /* Menos alto / más delgadito */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .hero-header h1 {
-    font-size: 1.8rem;
-    font-weight: 800;
+    font-size: 1.3rem; /* Tamaño de texto ajustado al nuevo grosor */
+    font-weight: 700;
     color: #ffffff;
-    letter-spacing: -0.5px;
+    letter-spacing: -0.3px;
 }
 
 /* Contenido principal */
