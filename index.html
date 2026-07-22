@@ -13,16 +13,14 @@
         <h1>Bienvenido a Train Transit</h1>
     </header>
 
-    <!-- Subtítulo y Accesos Rápidos -->
-    <main class="container">
+    <!-- Vista de Inicio -->
+    <main class="container" id="home-view">
         <p class="subtitle">Tu transporte público en la palma de la mano</p>
         
         <h2 class="section-title">ACCESOS RÁPIDOS</h2>
 
-        <!-- Rejilla de tarjetas -->
         <div class="quick-access-grid">
-            
-            <a href="#" class="card card-red">
+            <a href="#" class="card card-red" onclick="showView('lineas')">
                 <div class="card-header">
                     <span class="card-icon">🚆</span>
                     <span class="arrow">›</span>
@@ -30,7 +28,7 @@
                 <h3>Líneas</h3>
             </a>
 
-            <a href="#" class="card card-blue">
+            <a href="#" class="card card-blue" onclick="showView('estaciones')">
                 <div class="card-header">
                     <span class="card-icon">📍</span>
                     <span class="arrow">›</span>
@@ -38,7 +36,7 @@
                 <h3>Estaciones</h3>
             </a>
 
-            <a href="#" class="card card-green">
+            <a href="#" class="card card-green" onclick="showView('mapa')">
                 <div class="card-header">
                     <span class="card-icon">🗺️</span>
                     <span class="arrow">›</span>
@@ -46,44 +44,59 @@
                 <h3>Mapa</h3>
             </a>
 
-            <a href="#" class="card card-purple">
+            <a href="#" class="card card-purple" onclick="showView('favoritos')">
                 <div class="card-header">
                     <span class="card-icon">❤️</span>
                     <span class="arrow">›</span>
                 </div>
                 <h3>Favoritos</h3>
             </a>
-
         </div>
     </main>
 
-    <!-- Menú inferior de navegación -->
+    <!-- Vista de Estaciones (oculta por defecto) -->
+    <main class="container view-hidden" id="estaciones-view">
+        <h2 class="section-title">Estaciones</h2>
+        
+        <!-- Buscador -->
+        <div class="search-box">
+            <input type="text" id="station-search" placeholder="Buscar estación (ej. Oviedo)..." oninput="filterStations()">
+        </div>
+
+        <!-- Lista de estaciones desde CSV -->
+        <div id="stations-list" class="stations-list">
+            <p class="loading-text">Cargando estaciones...</p>
+        </div>
+    </main>
+
+    <!-- Navegación inferior fija -->
     <nav class="bottom-nav">
-        <a href="#" class="nav-item active">
+        <a href="#" class="nav-item active" id="nav-home" onclick="showView('home')">
             <span class="nav-icon">🏠</span>
             <span>Inicio</span>
         </a>
-        <a href="#" class="nav-item">
+        <a href="#" class="nav-item" id="nav-lineas" onclick="showView('lineas')">
             <span class="nav-icon">🚆</span>
             <span>Líneas</span>
         </a>
-        <a href="#" class="nav-item">
+        <a href="#" class="nav-item" id="nav-estaciones" onclick="showView('estaciones')">
             <span class="nav-icon">📍</span>
             <span>Estaciones</span>
         </a>
-        <a href="#" class="nav-item">
+        <a href="#" class="nav-item" id="nav-mapa" onclick="showView('mapa')">
             <span class="nav-icon">🗺️</span>
             <span>Mapa</span>
         </a>
-        <a href="#" class="nav-item">
+        <a href="#" class="nav-item" id="nav-favoritos" onclick="showView('favoritos')">
             <span class="nav-icon">❤️</span>
             <span>Favoritos</span>
         </a>
-        <a href="#" class="nav-item">
+        <a href="#" class="nav-item" id="nav-ajustes" onclick="showView('ajustes')">
             <span class="nav-icon">⚙️</span>
             <span>Ajustes</span>
         </a>
     </nav>
 
+    <script src="script.js"></script>
 </body>
 </html>
