@@ -124,3 +124,35 @@ h2 {
     font-weight: bold;
     font-size: 0.9rem;
 }
+/* Estilos para el menú inferior flotante */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #0f172a;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 8px 0;
+    border-top: 1px solid #1e293b;
+    z-index: 100;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 0.75rem;
+}
+
+.nav-item.active {
+    color: #ef4444; /* Color rojo/destacado de la pestaña activa */
+}
+
+.nav-item .icon {
+    font-size: 1.2rem;
+    margin-bottom: 2px;
+}
