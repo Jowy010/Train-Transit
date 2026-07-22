@@ -1,7 +1,7 @@
-// Mapa donde guardaremos las estaciones: { "18002": "Gijón", ... }
+// Mapa donde guardaremos las estaciones { "18002": "Gijón", ... }
 const mapaEstaciones = {};
 
-// 1. Función para cargar y procesar los dos CSV de estaciones
+// 1. Cargar y procesar los CSV de estaciones
 async function cargarEstaciones() {
     try {
         const resIberico = await fetch('Estaciones Cercanías Asturias.csv');
@@ -13,17 +13,20 @@ async function cargarEstaciones() {
         procesarCSV(textoIberico);
         procesarCSV(textoFeve);
 
-        console.log("Estaciones cargadas correctamente:", Object.keys(mapaEstaciones).length);
+        console.log("Estaciones cargadas:", Object.keys(mapaEstaciones).length);
+        
+        // Pintar la lista de estaciones en la interfaz
+        renderizarListaEstaciones();
     } catch (error) {
         console.error("Error al cargar las estaciones:", error);
     }
 }
 
-// Convierte las líneas del CSV en el mapa de estaciones
+// Convierte las líneas del CSV en el objeto de estaciones
 function procesarCSV(contenidoCSV) {
     const lineas = contenidoCSV.split('\n');
     lineas.forEach(linea => {
-        const columnas = linea.split(/,|;/); // Acepta coma o punto y coma
+        const columnas = linea.split(/,|;/);
         if (columnas.length >= 2) {
             const id = columnas[0].trim().replace(/"/g, '');
             const nombre = columnas[1].trim().replace(/"/g, '');
@@ -34,9 +37,33 @@ function procesarCSV(contenidoCSV) {
     });
 }
 
-// 2. Asigna la imagen PNG correcta según la línea
+// 2. Renderizar la lista de estaciones en la pantalla principales
+function renderizarListaEstaciones() {
+    // Buscamos el contenedor de la lista de estaciones
+    const listaContenedor = document.getElementById("lista-estaciones") || document.querySelector(".stations-list");
+    if (!listaContenedor) return;
+
+    listaContenedor.innerHTML = "";
+
+    // Ordenamos las estaciones alfabéticamente
+    const estacionesOrdenadas = Object.entries(mapaEstaciones).sort((a, b) => a[1].localeCompare(b[1]));
+
+    estacionesOrdenadas.forEach(([id, nombre]) => {
+        const div = document.createElement("div");
+        div.className = "estacion-item";
+        div.style.cssText = "padding: 12px; margin: 6px 0; background: #1e293b; border-radius: 8px; color: white; display: flex; justify-content: space-between; align-items: center; cursor: pointer;";
+        div.innerHTML = `<span>📍 ${nombre}</span> <span>❯</span>`;
+        
+        // Al hacer clic, abrimos los trenes en vivo de esa estación
+        div.onclick = () => abrirDetalleEstacion(id, nombre);
+        
+        listaContenedor.appendChild(div);
+    });
+}
+
+// 3. Identificar la imagen PNG de la línea
 function obtenerLogoLinea(idTren) {
-    if (idTren.includes("C10")) return "img/C-10.png"; // Si existiera C10
+    if (idTren.includes("C10")) return "img/C-10.png";
     if (idTren.includes("C1")) return "img/C-1.png";
     if (idTren.includes("C2")) return "img/C-2.png";
     if (idTren.includes("C3")) return "img/C-3.png";
@@ -48,63 +75,89 @@ function obtenerLogoLinea(idTren) {
     return "img/C-1.png"; // Imagen por defecto
 }
 
-// 3. Función para obtener los datos en tiempo real y mostrarlos
+// 4. Mostrar los trenes al hacer clic en una estación
+async function abrirDetalleEstacion(idEstacion, nombreEstacion) {
+    // Buscamos el modal o cuadro de diálogo existente en la app
+    let modal = document.getElementById("modal-horarios");
+    
+    // Si el modal no existe en el HTML, lo creamos dinámicamente
+    if (!modal) {
+        modal = document.createElement("div");
+        modal.id = "modal-horarios";
+        modal.style.cssText = "position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 9999;";
+        document.body.appendChild(modal);
+    }
+
+    modal.style.display = "flex";
+    modal.innerHTML = `
+        <div style="background: #0f172a; color: white; padding: 20px; border-radius: 12px; width: 85%; max-width: 400px; max-height: 80vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="margin: 0;">Próximos trenes: ${nombreEstacion}</h3>
+                <button onclick="document.getElementById('modal-horarios').style.display='none'" style="background: transparent; border: none; color: #94a3b8; font-size: 20px; cursor: pointer;">✕</button>
+            </div>
+            <div id="contenido-trenes">
+                <p style="color: #94a3b8;">Buscando trenes en vivo...</p>
+            </div>
+        </div>
+    `;
+
+    // Consultamos los datos en tiempo real
+    obtenerTiempoReal(idEstacion);
+}
+
+// 5. Cargar y filtrar los datos de tiempo real (Asturias: 1001X)
 async function obtenerTiempoReal(idEstacionSeleccionada) {
+    const contenedor = document.getElementById("contenido-trenes");
+    
     try {
-        // AQUÍ pones la URL directa donde Renfe actualiza el feed en vivo
-        const respuesta = await fetch('URL_DEL_FEED_EN_TIEMPO_REAL');
+        // Leemos el archivo local trip_updates.pb que subiste
+        const respuesta = await fetch('trip_updates.pb');
         const textoDatos = await respuesta.text();
 
-        // Separar el feed por bloques
         const registros = textoDatos.split(/\s+/);
 
-        // Filtrar SOLO los trenes del núcleo de Asturias (1001X)
+        // Filtrar estrictamente datos de Asturias (1001X)
         const trenesAsturias = registros.filter(item => item.includes("1001X"));
 
-        const contenedor = document.getElementById("lista-trenes");
-        contenedor.innerHTML = ""; // Limpiar lista anterior
+        let coincidencias = [];
 
         trenesAsturias.forEach(tren => {
-            // Si el tren pasa por la estación seleccionada
             if (tren.includes(idEstacionSeleccionada)) {
                 const logo = obtenerLogoLinea(tren);
-                const nombreEstacion = mapaEstaciones[idEstacionSeleccionada] || "Estación";
-
-                // Insertar tarjeta HTML
-                contenedor.innerHTML += `
-                    <div class="train-card">
-                        <div class="train-header">
-                            <img src="${logo}" alt="Línea" class="line-icon">
-                            <span class="destination">${nombreEstacion}</span>
-                        </div>
-                        <div class="train-time">
-                            <span class="minutes">En aprox. min</span>
-                        </div>
-                    </div>
-                `;
+                coincidencias.push({
+                    id: tren,
+                    logo: logo
+                });
             }
+        });
+
+        if (coincidencias.length === 0) {
+            contenedor.innerHTML = `<p style="color: #94a3b8;">No hay trenes próximos registrados para esta estación ahora mismo.</p>`;
+            return;
+        }
+
+        contenedor.innerHTML = "";
+        coincidencias.forEach(tren => {
+            contenedor.innerHTML += `
+                <div style="display: flex; align-items: center; justify-content: space-between; background: #1e293b; padding: 12px; border-radius: 8px; margin-bottom: 8px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <img src="${tren.logo}" alt="Línea" style="height: 28px; width: auto;">
+                        <span style="font-weight: bold;">Cercanías Asturias</span>
+                    </div>
+                    <span style="color: #22c55e; font-weight: bold;">En horario</span>
+                </div>
+            `;
         });
 
     } catch (error) {
         console.error("Error cargando tiempo real:", error);
+        if (contenedor) {
+            contenedor.innerHTML = `<p style="color: #ef4444;">No se pudieron cargar los horarios en vivo.</p>`;
+        }
     }
 }
 
-// Inicializar al cargar la página
+// Inicializar la aplicación
 document.addEventListener("DOMContentLoaded", () => {
     cargarEstaciones();
-});
-// Detectar cuando el usuario cambia de estación en un selector (<select id="selector-estaciones">)
-document.addEventListener("DOMContentLoaded", () => {
-    cargarEstaciones();
-
-    // Si tienes un desplegable <select id="selector-estaciones"> en tu HTML:
-    const selector = document.getElementById("selector-estaciones");
-    if (selector) {
-        selector.addEventListener("change", (e) => {
-            const idEstacion = e.target.value;
-            console.log("Estación seleccionada:", idEstacion);
-            obtenerTiempoReal(idEstacion);
-        });
-    }
 });
