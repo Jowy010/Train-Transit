@@ -94,3 +94,17 @@ async function obtenerTiempoReal(idEstacionSeleccionada) {
 document.addEventListener("DOMContentLoaded", () => {
     cargarEstaciones();
 });
+// Detectar cuando el usuario cambia de estación en un selector (<select id="selector-estaciones">)
+document.addEventListener("DOMContentLoaded", () => {
+    cargarEstaciones();
+
+    // Si tienes un desplegable <select id="selector-estaciones"> en tu HTML:
+    const selector = document.getElementById("selector-estaciones");
+    if (selector) {
+        selector.addEventListener("change", (e) => {
+            const idEstacion = e.target.value;
+            console.log("Estación seleccionada:", idEstacion);
+            obtenerTiempoReal(idEstacion);
+        });
+    }
+});
