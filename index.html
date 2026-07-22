@@ -4,22 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Train Transit</title>
-    <meta name="theme-color" content="#3b82f6">
-    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
+    <!-- Encabezado con bienvenida -->
     <header>
         <h1>Train Transit</h1>
+        <p>¡Bienvenido a Train Transit! 👋</p>
     </header>
+
+    <!-- Contenido principal -->
     <main>
-        <section id="live-updates">
+        <section class="card">
             <h2>Próximos trenes en tiempo real</h2>
-            <div id="train-list">
-                <p>Cargando información de trenes...</p>
-            </div>
+            <p>Selecciona una estación o consulta los horarios desde el menú inferior.</p>
         </section>
     </main>
-    <script src="app.js"></script>
+
+    <!-- Menú inferior de navegación -->
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active">
+            <span class="nav-icon">🏠</span>
+            <span>Inicio</span>
+        </a>
+        <a href="#" class="nav-item">
+            <span class="nav-icon">🚉</span>
+            <span>Estaciones</span>
+        </a>
+        <a href="#" class="nav-item">
+            <span class="nav-icon">⚙️</span>
+            <span>Configuración</span>
+        </a>
+    </nav>
+
 </body>
 </html>
