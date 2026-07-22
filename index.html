@@ -13,7 +13,7 @@
         <h1>Bienvenido a Train Transit</h1>
     </header>
 
-    <!-- Vista de Inicio -->
+    <!-- Vista de INICIO -->
     <main class="container" id="home-view">
         <p class="subtitle">Tu transporte público en la palma de la mano</p>
         
@@ -54,22 +54,20 @@
         </div>
     </main>
 
-    <!-- Vista de Estaciones (oculta por defecto) -->
+    <!-- Vista de ESTACIONES (Oculta al principio) -->
     <main class="container view-hidden" id="estaciones-view">
         <h2 class="section-title">Estaciones</h2>
         
-        <!-- Buscador -->
         <div class="search-box">
             <input type="text" id="station-search" placeholder="Buscar estación (ej. Oviedo)..." oninput="filterStations()">
         </div>
 
-        <!-- Lista de estaciones desde CSV -->
         <div id="stations-list" class="stations-list">
             <p class="loading-text">Cargando estaciones...</p>
         </div>
     </main>
 
-    <!-- Navegación inferior fija -->
+    <!-- Menú inferior -->
     <nav class="bottom-nav">
         <a href="#" class="nav-item active" id="nav-home" onclick="showView('home')">
             <span class="nav-icon">🏠</span>
