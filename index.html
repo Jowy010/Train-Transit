@@ -3,41 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Train Transit - Asturias</title>
+    <title>Train Transit</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
+    <!-- Encabezado Superior -->
     <header class="navbar">
-        <h1>Bienvenido a Train Transit 🚆</h1>
+        <h1>¡Bienvenido a Train Transit! 👋</h1>
     </header>
 
+    <!-- Contenido Principal -->
     <main class="container">
         <h2>ESTACIONES</h2>
         
         <!-- Buscador -->
         <input type="text" id="buscador" placeholder="Buscar estación (ej. Oviedo)..." onkeyup="filtrarEstaciones()">
 
-        <!-- Lista donde se cargarán las estaciones de los CSV -->
+        <!-- Lista donde se cargan las estaciones -->
         <div id="lista-estaciones" class="stations-list">
-            <p class="loading">Cargando estaciones...</p>
+            <!-- Se rellena dinámicamente -->
         </div>
     </main>
 
-    <!-- Modal flotante para mostrar horarios en vivo -->
+    <!-- Modal Flotante (Popup de Horarios) -->
     <div id="modal-horarios" class="modal-overlay" style="display: none;">
         <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="modal-titulo">Próximos trenes</h3>
-                <button class="btn-cerrar" onclick="cerrarModal()">✕</button>
-            </div>
             <div id="modal-body">
-                <p>Cargando información...</p>
+                <!-- Aquí se inyectan los trenes y logos -->
             </div>
         </div>
     </div>
 
-    <!-- Vinculamos ÚNICAMENTE app.js -->
+    <!-- Menú de Navegación Inferior (Pestañas) -->
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item">
+            <span class="icon">🏠</span>
+            <span class="text">Inicio</span>
+        </a>
+        <a href="#" class="nav-item">
+            <span class="icon">🚆</span>
+            <span class="text">Líneas</span>
+        </a>
+        <a href="#" class="nav-item active">
+            <span class="icon">📍</span>
+            <span class="text">Estaciones</span>
+        </a>
+        <a href="#" class="nav-item">
+            <span class="icon">🗺️</span>
+            <span class="text">Mapa</span>
+        </a>
+        <a href="#" class="nav-item">
+            <span class="icon">❤️</span>
+            <span class="text">Favoritos</span>
+        </a>
+        <a href="#" class="nav-item">
+            <span class="icon">⚙️</span>
+            <span class="text">Ajustes</span>
+        </a>
+    </nav>
+
     <script src="app.js"></script>
 </body>
 </html>
