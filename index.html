@@ -8,18 +8,53 @@
 </head>
 <body>
 
-    <!-- Encabezado con bienvenida -->
-    <header>
-        <h1>Train Transit</h1>
-        <p>¡Bienvenido a Train Transit! 👋</p>
+    <!-- Encabezado superior -->
+    <header class="hero-header">
+        <h1>Bienvenido a Train Transit</h1>
     </header>
 
-    <!-- Contenido principal -->
-    <main>
-        <section class="card">
-            <h2>Próximos trenes en tiempo real</h2>
-            <p>Selecciona una estación o consulta los horarios desde el menú inferior.</p>
-        </section>
+    <!-- Subtítulo y Accesos Rápidos -->
+    <main class="container">
+        <p class="subtitle">Tu transporte público en la palma de la mano</p>
+        
+        <h2 class="section-title">ACCESOS RÁPIDOS</h2>
+
+        <!-- Rejilla de tarjetas -->
+        <div class="quick-access-grid">
+            
+            <a href="#" class="card card-red">
+                <div class="card-header">
+                    <span class="card-icon">🚆</span>
+                    <span class="arrow">›</span>
+                </div>
+                <h3>Líneas</h3>
+            </a>
+
+            <a href="#" class="card card-blue">
+                <div class="card-header">
+                    <span class="card-icon">📍</span>
+                    <span class="arrow">›</span>
+                </div>
+                <h3>Estaciones</h3>
+            </a>
+
+            <a href="#" class="card card-green">
+                <div class="card-header">
+                    <span class="card-icon">🗺️</span>
+                    <span class="arrow">›</span>
+                </div>
+                <h3>Mapa</h3>
+            </a>
+
+            <a href="#" class="card card-purple">
+                <div class="card-header">
+                    <span class="card-icon">❤️</span>
+                    <span class="arrow">›</span>
+                </div>
+                <h3>Favoritos</h3>
+            </a>
+
+        </div>
     </main>
 
     <!-- Menú inferior de navegación -->
@@ -29,12 +64,24 @@
             <span>Inicio</span>
         </a>
         <a href="#" class="nav-item">
-            <span class="nav-icon">🚉</span>
+            <span class="nav-icon">🚆</span>
+            <span>Líneas</span>
+        </a>
+        <a href="#" class="nav-item">
+            <span class="nav-icon">📍</span>
             <span>Estaciones</span>
         </a>
         <a href="#" class="nav-item">
+            <span class="nav-icon">🗺️</span>
+            <span>Mapa</span>
+        </a>
+        <a href="#" class="nav-item">
+            <span class="nav-icon">❤️</span>
+            <span>Favoritos</span>
+        </a>
+        <a href="#" class="nav-item">
             <span class="nav-icon">⚙️</span>
-            <span>Configuración</span>
+            <span>Ajustes</span>
         </a>
     </nav>
 
