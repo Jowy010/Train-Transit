@@ -116,7 +116,7 @@ body {
     border: 1px solid #1e293b;
     background-color: #111625;
     color: #fff;
-    font-size: 0.95rem;
+    font-size: 16px; /* Evita que el móvil haga zoom automático al enfocar */
     outline: none;
 }
 
