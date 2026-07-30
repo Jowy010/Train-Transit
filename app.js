@@ -8,7 +8,7 @@ async function cargarEstaciones() {
             throw new Error("No se pudo encontrar el archivo CSV");
         }
         
-        // Usar latin1 / windows-1252 para leer correctamente tildes y caracteres españoles
+        // Usar ISO-8859-1 (Latin1) para procesar tildes y caracteres españoles adecuadamente
         const buffer = await respuesta.arrayBuffer();
         const decoder = new TextDecoder('iso-8859-1');
         const textoCSV = decoder.decode(buffer);
@@ -23,7 +23,7 @@ async function cargarEstaciones() {
     }
 }
 
-// 2. Procesar las columnas del CSV (CODIGO;DESCRIPCION;...;PROVINCIA)
+// 2. Procesar absolutamente TODAS las filas del CSV (CODIGO;DESCRIPCION;...;PROVINCIA)
 function procesarCSV(texto) {
     const lineas = texto.split('\n');
     estacionesEspana = [];
@@ -32,30 +32,32 @@ function procesarCSV(texto) {
         const linea = lineas[i].trim();
         if (!linea) continue;
 
-        // Separar por punto y coma (;) quitando comillas
+        // Separar por punto y coma (;) eliminando comillas extra
         const columnas = linea.split(';').map(c => c.replace(/"/g, '').trim());
 
-        if (columnas.length >= 8) {
+        if (columnas.length >= 2) {
             const codigo = columnas[0];
             const nombre = columnas[1];
-            const provincia = columnas[7];
+            const provincia = columnas[7] || "España";
 
-            if (codigo && nombre) {
+            if (codigo && nombre && nombre !== "DESCRIPCION") {
                 estacionesEspana.push({
                     codigo: codigo,
                     nombre: nombre,
-                    provincia: provincia || "España"
+                    provincia: provincia
                 });
             }
         }
     }
 
-    // Ordenar alfabéticamente
+    // Ordenar alfabéticamente por nombre de estación
     estacionesEspana.sort((a, b) => a.nombre.localeCompare(b.nombre));
+    
+    // Renderizar todas las estaciones
     renderizarEstaciones(estacionesEspana);
 }
 
-// 3. Renderizar en pantalla
+// 3. Renderizar en pantalla (todas las estaciones disponibles)
 function renderizarEstaciones(estaciones) {
     const contenedor = document.getElementById("stations-list");
     if (!contenedor) return;
@@ -67,8 +69,11 @@ function renderizarEstaciones(estaciones) {
 
     contenedor.innerHTML = "";
 
-    // Renderizar (limitamos a 100 en vista inicial para máxima fluidez)
-    const listaAMostrar = estaciones.slice(0, 100);
+    // Si el usuario no ha buscado nada, mostramos un bloque inicial amplio (300).
+    // Si el usuario ha usado el buscador, mostramos TODAS las coincidencia encontradas sin límite.
+    const inputBuscador = document.getElementById("station-search");
+    const estaBuscando = inputBuscador && inputBuscador.value.trim().length > 0;
+    const listaAMostrar = estaBuscando ? estaciones : estaciones.slice(0, 300);
 
     listaAMostrar.forEach(est => {
         const tarjeta = document.createElement("div");
@@ -83,9 +88,17 @@ function renderizarEstaciones(estaciones) {
         `;
         contenedor.appendChild(tarjeta);
     });
+
+    // Indicador visual de total cargado
+    if (!estaBuscando && estaciones.length > 300) {
+        const aviso = document.createElement("p");
+        aviso.style.cssText = "color: #94a3b8; text-align: center; padding: 15px; font-size: 0.85rem;";
+        aviso.innerText = `Mostrando 300 de ${estaciones.length} estaciones totales. Usa el buscador para encontrar cualquier estación específica.`;
+        contenedor.appendChild(aviso);
+    }
 }
 
-// 4. Buscador en tiempo real por nombre o provincia
+// 4. Buscador en tiempo real sobre el 100% de la base de datos
 function filterStations() {
     const input = document.getElementById("station-search");
     if (!input) return;
