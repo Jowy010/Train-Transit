@@ -8,7 +8,7 @@ async function cargarEstaciones() {
             throw new Error("No se pudo encontrar el archivo CSV");
         }
         
-        // Usar ISO-8859-1 (Latin1) para procesar tildes y caracteres españoles adecuadamente
+        // Usar ISO-8859-1 (Latin1) para procesar tildes y la Ñ correctamente
         const buffer = await respuesta.arrayBuffer();
         const decoder = new TextDecoder('iso-8859-1');
         const textoCSV = decoder.decode(buffer);
@@ -23,7 +23,7 @@ async function cargarEstaciones() {
     }
 }
 
-// 2. Procesar TODAS las filas del CSV de la A a la Z
+// 2. Procesar TODAS las filas respetando tildes y Ñs
 function procesarCSV(texto) {
     const lineas = texto.split('\n');
     estacionesEspana = [];
@@ -32,7 +32,6 @@ function procesarCSV(texto) {
         const linea = lineas[i].trim();
         if (!linea) continue;
 
-        // Separar por punto y coma (;) quitando comillas
         const columnas = linea.split(';').map(c => c.replace(/"/g, '').trim());
 
         if (columnas.length >= 2) {
@@ -40,7 +39,6 @@ function procesarCSV(texto) {
             const nombre = columnas[1];
             const provincia = columnas[7] || "España";
 
-            // Asegurar que el código tenga 5 dígitos (ej: "1003" -> "01003")
             if (codigo && codigo.length < 5) {
                 codigo = codigo.padStart(5, '0');
             }
@@ -55,14 +53,13 @@ function procesarCSV(texto) {
         }
     }
 
-    // Ordenar de la A a la Z por el nombre de la estación
+    // Ordenar de la A a la Z
     estacionesEspana.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
     
-    // Renderizar la lista completa
     renderizarEstaciones(estacionesEspana);
 }
 
-// 3. Renderizar en pantalla todas las estaciones
+// 3. Renderizar estaciones en la lista
 function renderizarEstaciones(estaciones) {
     const contenedor = document.getElementById("stations-list");
     if (!contenedor) return;
@@ -74,7 +71,6 @@ function renderizarEstaciones(estaciones) {
 
     contenedor.innerHTML = "";
 
-    // Muestra todas las estaciones sin ningún corte ni límite
     estaciones.forEach(est => {
         const tarjeta = document.createElement("div");
         tarjeta.style.cssText = "display: flex; justify-content: space-between; align-items: center; padding: 14px; background: #1e293b; color: white; margin-bottom: 8px; border-radius: 10px; cursor: pointer; border: 1px solid #334155;";
@@ -108,7 +104,7 @@ function filterStations() {
     renderizarEstaciones(filtradas);
 }
 
-// 5. Control de pantallas (Navegación)
+// 5. Control de pantallas
 function showView(viewName) {
     const homeView = document.getElementById("home-view");
     const estacionesView = document.getElementById("estaciones-view");
@@ -126,7 +122,7 @@ function showView(viewName) {
     }
 }
 
-// 6. Vista de detalle con el panel navegador integrado
+// 6. Vista con PANEL EN DIRECTO INCRUSTADO (Sin salir de tu web)
 function verDetalleEstacion(estacion) {
     const titulo = document.getElementById("estacion-titulo");
     if (titulo) titulo.innerText = estacion.nombre;
@@ -134,45 +130,39 @@ function verDetalleEstacion(estacion) {
     const panelSalidas = document.getElementById("panel-salidas");
     if (!panelSalidas) return;
 
-    // Formatear el slug para el enlace oficial de Adif
+    // Generar el slug respetando tildes y Ñs exactas de Adif
     const slug = estacion.nombre
         .toLowerCase()
-        .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Quitar tildes
-        .replace(/[^a-z0-9\s-]/g, '')
         .trim()
         .replace(/\s+/g, '-');
 
-    const urlAdif = `https://www.adif.es/w/${estacion.codigo}-${slug}?tipoBusqueda=proximasSalidas&trafficType=cercanias&pageFromPlid=335`;
+    const urlAdif = `https://www.adif.es/w/${estacion.codigo}-${encodeURIComponent(slug)}?tipoBusqueda=proximasSalidas&trafficType=cercanias&pageFromPlid=335`;
 
     panelSalidas.innerHTML = `
         <div style="background: #0f172a; border-radius: 12px; border: 1px solid #334155; overflow: hidden; font-family: system-ui, sans-serif;">
             
-            <!-- Encabezado de la Pantalla Interna -->
+            <!-- Barra superior del visor integrado -->
             <div style="background: #1e293b; padding: 12px 16px; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center;">
                 <div style="display: flex; align-items: center; gap: 8px;">
                     <span style="height: 10px; width: 10px; background-color: #22c55e; border-radius: 50%; display: inline-block;"></span>
-                    <span style="font-size: 0.85rem; font-weight: bold; color: #e2e8f0; letter-spacing: 0.5px;">PANEL EN DIRECTO</span>
+                    <span style="font-size: 0.85rem; font-weight: bold; color: #e2e8f0;">TIEMPOS EN DIRECTO</span>
                 </div>
-                <span style="font-size: 0.75rem; background: #334155; color: #94a3b8; padding: 2px 8px; border-radius: 4px;">CÓDIGO: ${estacion.codigo}</span>
+                <span style="font-size: 0.75rem; background: #334155; color: #94a3b8; padding: 2px 8px; border-radius: 4px;">${estacion.provincia}</span>
             </div>
 
-            <!-- Contenido del Panel -->
-            <div style="padding: 20px; text-align: center;">
-                <h3 style="color: #f8fafc; margin-top: 0; margin-bottom: 5px; font-size: 1.2rem;">${estacion.nombre}</h3>
-                <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 20px;">Provincia de ${estacion.provincia}</p>
-                
-                <div style="background: #1e293b; border: 1px dashed #475569; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-                    <p style="color: #94a3b8; font-size: 0.9rem; margin: 0 0 15px 0; line-height: 1.4;">
-                        Consulta los horarios en vivo, vía de salida y tiempo real de Adif para esta estación:
-                    </p>
-                    
-                    <a href="${urlAdif}" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #0284c7; color: white; text-decoration: none; font-weight: 600; padding: 14px 20px; border-radius: 8px; font-size: 0.95rem; width: 100%; box-sizing: border-box; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3);">
-                        <span>🚆 Cargar salidas de ${estacion.nombre}</span>
-                    </a>
-                </div>
+            <!-- Pantalla Frame Incrustada Directamente -->
+            <div style="position: relative; width: 100%; height: 600px; background: #ffffff;">
+                <iframe 
+                    src="${urlAdif}" 
+                    style="width: 100%; height: 100%; border: none;"
+                    title="Panel Adif ${estacion.nombre}">
+                </iframe>
+            </div>
 
-                <a href="https://www.renfe.com/es/es/cercanias" target="_blank" style="display: block; color: #38bdf8; text-decoration: none; font-size: 0.85rem; font-weight: 500;">
-                    Ver plano de líneas y horarios en Renfe →
+            <!-- Opción alternativa por si la conexión de Adif va lenta -->
+            <div style="padding: 10px; background: #1e293b; text-align: center; border-top: 1px solid #334155;">
+                <a href="${urlAdif}" target="_blank" style="color: #38bdf8; text-decoration: none; font-size: 0.8rem;">
+                    ¿No se visualiza el panel? Abrir en ventana completa ↗
                 </a>
             </div>
         </div>
