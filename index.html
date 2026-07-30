@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Train Transit</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Encabezado superior principal -->
+    <header class="hero-header" id="main-header">
+        <h1>Bienvenido a Train Transit</h1>
+    </header>
+
+    <!-- Vista de INICIO -->
+    <main class="container" id="home-view">
+        <p class="subtitle">Tu transporte público en la palma de la mano</p>
+        
+        <h2 class="section-title">ACCESOS RÁPIDOS</h2>
+
+        <div class="quick-access-grid">
+            <a href="#" class="card card-red" onclick="showView('lineas')">
+                <div class="card-header">
+                    <span class="card-icon">🚆</span>
+                    <span class="arrow">›</span>
+                </div>
+                <h3>Líneas</h3>
+            </a>
+
+            <a href="#" class="card card-blue" onclick="showView('estaciones')">
+                <div class="card-header">
+                    <span class="card-icon">📍</span>
+                    <span class="arrow">›</span>
+                </div>
+                <h3>Estaciones</h3>
+            </a>
+
+            <a href="#" class="card card-green" onclick="showView('mapa')">
+                <div class="card-header">
+                    <span class="card-icon">🗺️</span>
+                    <span class="arrow">›</span>
+                </div>
+                <h3>Mapa</h3>
+            </a>
+
+            <a href="#" class="card card-purple" onclick="showView('favoritos')">
+                <div class="card-header">
+                    <span class="card-icon">❤️</span>
+                    <span class="arrow">›</span>
+                </div>
+                <h3>Favoritos</h3>
+            </a>
+        </div>
+    </main>
+
+    <!-- Vista de LISTA DE ESTACIONES -->
+    <main class="container view-hidden" id="estaciones-view" style="display: none;">
+        <h2 class="section-title">Estaciones de Asturias</h2>
+        
+        <div class="search-box">
+            <input type="text" id="station-search" placeholder="Buscar estación (ej. Oviedo, Gijón)..." oninput="filterStations()">
+        </div>
+
+        <div id="stations-list" class="stations-list">
+            <p class="loading-text">Cargando estaciones...</p>
+        </div>
+    </main>
+
+    <!-- Vista de DETALLE DE ESTACIÓN -->
+    <main class="container view-hidden" id="detalle-estacion-view" style="display: none; padding-top: 15px;">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+            <button onclick="showView('estaciones')" style="background: #334155; border: none; color: white; padding: 8px 14px; border-radius: 8px; font-size: 1.1rem; cursor: pointer;">← Volver</button>
+            <h1 id="estacion-titulo" style="margin: 0; font-size: 1.5rem; color: #f8fafc; font-weight: bold;">Estación</h1>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; color: #94a3b8; font-size: 0.9rem;">
+            <span>PRÓXIMAS SALIDAS</span>
+            <span style="color: #22c55e; font-weight: bold;">🟢 En tiempo real</span>
+        </div>
+
+        <div id="panel-salidas"></div>
+    </main>
+
+    <!-- Modal para ver el recorrido/enlace al hacer click -->
+    <div id="modal-recorrido" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; z-index: 2000; padding: 15px;">
+        <div id="modal-recorrido-body" style="background: #1e293b; padding: 20px; border-radius: 16px; width: 100%; max-width: 450px; color: white; max-height: 85vh; overflow-y: auto;">
+        </div>
+    </div>
+
+    <!-- Menú inferior -->
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active" id="nav-home" onclick="showView('home')">
+            <span class="nav-icon">🏠</span>
+            <span>Inicio</span>
+        </a>
+        <a href="#" class="nav-item" id="nav-lineas" onclick="showView('lineas')">
+            <span class="nav-icon">🚆</span>
+            <span>Líneas</span>
+        </a>
+        <a href="#" class="nav-item" id="nav-estaciones" onclick="showView('estaciones')">
+            <span class="nav-icon">📍</span>
+            <span>Estaciones</span>
+        </a>
+        <a href="#" class="nav-item" id="nav-mapa" onclick="showView('mapa')">
+            <span class="nav-icon">🗺️</span>
+            <span>Mapa</span>
+        </a>
+        <a href="#" class="nav-item" id="nav-favoritos" onclick="showView('favoritos')">
+            <span class="nav-icon">❤️</span>
+            <span>Favoritos</span>
+        </a>
+        <a href="#" class="nav-item" id="nav-ajustes" onclick="showView('ajustes')">
+            <span class="nav-icon">⚙️</span>
+            <span>Ajustes</span>
+        </a>
+    </nav>
+
+    <script src="app.js"></script>
+</body>
+</html>
